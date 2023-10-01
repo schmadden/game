@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Circle Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #game-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+
+        .word {
+            position: absolute;
+            cursor: pointer;
+        }
+
+        #middle-word {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="middle-word" class="word" style="top: 50%; left: 50%;">Middle</div>
+    </div>
+    <script>
+        const words = ["Word1", "Word2", "Word3", "Word4", "Word5", "Word6", "Word7", "Word8", "Word9", "Word10", "Word11", "Word12"];
+
+        let mistakes = 0;
+
+        function createWord(word, angle) {
+            const wordElement = document.createElement("div");
+            wordElement.className = "word";
+            wordElement.textContent = word;
+
+            const radians = (angle * Math.PI) / 180;
+            const x = 200 + 150 * Math.cos(radians);
+            const y = 200 + 150 * Math.sin(radians);
+
+            wordElement.style.top = `${y}px`;
+            wordElement.style.left = `${x}px`;
+
+            wordElement.addEventListener("click", () => handleWordClick(wordElement, word));
+
+            document.getElementById("game-container").appendChild(wordElement);
+        }
+
+        function handleWordClick(wordElement, word) {
+            if (word === "Middle") {
+                alert("You clicked the middle word!");
+                return;
+            }
+
+            if (mistakes < 6) {
+                mistakes++;
+            } else {
+                alert("You've reached the maximum number of mistakes. Game over!");
+                resetGame();
+                return;
+            }
+
+            // Handle incorrect word click
+            alert(`Incorrect word: ${word}`);
+            wordElement.remove();
+        }
+
+        function resetGame() {
+            mistakes = 0;
+            document.querySelectorAll(".word").forEach((wordElement) => wordElement.remove());
+            createWord("Middle", 0);
+
+            // Create words in a circle
+            for (let i = 0; i < words.length; i++) {
+                const angle = (360 / words.length) * i;
+                createWord(words[i], angle);
+            }
+        }
+
+        // Initialize the game
+        resetGame();
+    </script>
+</body>
+</html>
